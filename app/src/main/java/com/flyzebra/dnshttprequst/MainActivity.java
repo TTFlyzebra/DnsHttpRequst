@@ -29,8 +29,8 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-//                DnsTools.revQuery("connectivitycheck.gstatic.com", "8.8.8.8");
-                sendGet();
+                DnsTools.revQuery("connectivitycheck.gstatic.com", "202.96.134.133");
+//                sendGet();
             }
         }).start();
     }

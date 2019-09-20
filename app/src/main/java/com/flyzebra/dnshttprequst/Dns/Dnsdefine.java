@@ -18,7 +18,7 @@ public class Dnsdefine {
         AddtitionalRRs = addtitionalRRs;
     }
 
-    public Dnsdefine(Head head, Queries queries){
+    public Dnsdefine(Head head, Queries queries) {
         this.head = head;
         this.queries = queries;
         AnswerRRs = null;
@@ -32,35 +32,42 @@ public class Dnsdefine {
         return null;
     }
 
-    public byte[] Sendmsgbyte(){
+    public byte[] Sendmsgbyte() {
         byte[] h = head.getHead();
         byte[] q = queries.getQueries();
-        return Util.byteMergerAll(h,q);
+        return Util.byteMergerAll(h, q);
     }
 
-    public String  printfinfo(){
+    public String printfinfo() {
         //输出请求得到的报文的相关信息
-        String res = "\n";
-        res += "Questions:    " + head.getQuestions() + "\n";
-        res += "AnswerRRs:    " + head.getAnswerRRs() + "\n";
-        res += "AuthorityRRs:    " + head.getAuthorityRRs() + "\n";
-        res += "AddtitionalRRs:    " + head.getAddtitionalRRs() + "\n";
-        if (AnswerRRs != null){
-            res +="AnswerRRs:\n";
-            for (int i = 0; i< AnswerRRs.length ;i++)
-                res += i +":    " + AnswerRRs[i].printsiminfo();
+        StringBuilder res = new StringBuilder("\n");
+        res.append("Questions:    ").append(head.getQuestions()).append("\n");
+        res.append("AnswerRRs:    ").append(head.getAnswerRRs()).append("\n");
+        res.append("AuthorityRRs:    ").append(head.getAuthorityRRs()).append("\n");
+        res.append("AddtitionalRRs:    ").append(head.getAddtitionalRRs()).append("\n");
+        if (AnswerRRs != null) {
+            res.append("AnswerRRs:\n");
+            for (int i = 0; i < AnswerRRs.length; i++) {
+                if (AnswerRRs[i] != null) {
+                    res.append(i).append(":    ").append(AnswerRRs[i].printsiminfo());
+                }
+            }
         }
-        if (AuthorityRRs != null){
-            res += "AuthorityRRs:\n";
-            for (int i = 0; i< AuthorityRRs.length ;i++)
-                res += i +":    " +AuthorityRRs[i].printsiminfo();
+        if (AuthorityRRs != null) {
+            res.append("AuthorityRRs:\n");
+            for (int i = 0; i < AuthorityRRs.length; i++)
+                if (AuthorityRRs[i] != null) {
+                    res.append(i).append(":    ").append(AuthorityRRs[i].printsiminfo());
+                }
         }
-        if (AddtitionalRRs != null){
-            res += "AddtitionalRRs\n";
-            for (int i = 0; i< AddtitionalRRs.length ;i++)
-                res +=  i +":    " + AddtitionalRRs[i].printsiminfo();
+        if (AddtitionalRRs != null) {
+            res.append("AddtitionalRRs\n");
+            for (int i = 0; i < AddtitionalRRs.length; i++)
+                if (AddtitionalRRs[i] != null) {
+                    res.append(i).append(":    ").append(AddtitionalRRs[i].printsiminfo());
+                }
         }
-        return res;
+        return res.toString();
     }
 
     public Head getHead() {
