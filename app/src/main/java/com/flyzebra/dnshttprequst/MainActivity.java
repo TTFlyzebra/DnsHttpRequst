@@ -29,12 +29,8 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    sendGet();
-                } catch (Exception e) {
-                    FlyLog.e(e.toString());
-                    e.printStackTrace();
-                }
+//                DnsTools.revQuery("connectivitycheck.gstatic.com", "8.8.8.8");
+                sendGet();
             }
         }).start();
     }
@@ -44,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
         BufferedReader bufferedReader;
         BufferedWriter bufferedWriter;
         try {
-            InetAddress localAddress=InetAddress.getByName(getIpAddress("eth0"));
-            socket = new Socket("203.208.40.127", 80, localAddress, 0);
+            InetAddress localAddress = InetAddress.getByName(getIpAddress("eth0"));
+            socket = new Socket("203.208.50.96", 80, localAddress, 0);
             OutputStreamWriter streamWriter = new OutputStreamWriter(socket.getOutputStream());
             bufferedWriter = new BufferedWriter(streamWriter);
             bufferedWriter.write("GET /generate_204 HTTP/1.1\r\n");
@@ -91,9 +87,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         } catch (SocketException e) {
+            FlyLog.e(e.toString());
             e.printStackTrace();
         }
-        FlyLog.d("getIpAddress,interface:"+netInterface+",ip:"+hostIp);
+        FlyLog.d("getIpAddress,interface:" + netInterface + ",ip:" + hostIp);
         return hostIp;
     }
 
