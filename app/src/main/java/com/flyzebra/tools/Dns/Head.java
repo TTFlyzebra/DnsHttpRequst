@@ -1,6 +1,6 @@
-package com.flyzebra.dnshttprequst.Dns;
+package com.flyzebra.tools.Dns;
 
-import com.flyzebra.dnshttprequst.util.Util;
+import com.flyzebra.tools.util.Util;
 
 public class Head {
     //dns 报文的头部定义 可直接使用十六进制赋值 12byte

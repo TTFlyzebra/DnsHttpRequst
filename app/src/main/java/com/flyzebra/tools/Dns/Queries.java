@@ -1,6 +1,6 @@
-package com.flyzebra.dnshttprequst.Dns;
+package com.flyzebra.tools.Dns;
 
-import com.flyzebra.dnshttprequst.util.Util;
+import com.flyzebra.tools.util.Util;
 
 public class Queries {
     private String Name;//需要解析的域名

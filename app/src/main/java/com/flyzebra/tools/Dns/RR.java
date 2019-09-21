@@ -1,6 +1,6 @@
-package com.flyzebra.dnshttprequst.Dns;
+package com.flyzebra.tools.Dns;
 
-import com.flyzebra.dnshttprequst.util.Util;
+import com.flyzebra.tools.util.Util;
 
 public class RR { //主要应用于dns 服务器返回的数据的提取
     private short Name;//域名 正常情况下 常使用: C00C

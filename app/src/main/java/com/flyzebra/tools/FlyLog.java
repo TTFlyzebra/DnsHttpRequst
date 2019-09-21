@@ -1,4 +1,4 @@
-package com.flyzebra.dnshttprequst;
+package com.flyzebra.tools;
 
 import android.util.Log;
 

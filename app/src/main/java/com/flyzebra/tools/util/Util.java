@@ -1,6 +1,5 @@
-package com.flyzebra.dnshttprequst.util;
+package com.flyzebra.tools.util;
 
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;

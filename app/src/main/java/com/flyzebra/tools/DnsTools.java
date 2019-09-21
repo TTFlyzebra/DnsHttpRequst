@@ -1,10 +1,11 @@
-package com.flyzebra.dnshttprequst;
+package com.flyzebra.tools;
 
-import com.flyzebra.dnshttprequst.Dns.Dnsdefine;
-import com.flyzebra.dnshttprequst.Dns.Head;
-import com.flyzebra.dnshttprequst.Dns.Queries;
-import com.flyzebra.dnshttprequst.Dns.RR;
-import com.flyzebra.dnshttprequst.util.Util;
+
+import com.flyzebra.tools.Dns.Dnsdefine;
+import com.flyzebra.tools.Dns.Head;
+import com.flyzebra.tools.Dns.Queries;
+import com.flyzebra.tools.Dns.RR;
+import com.flyzebra.tools.util.Util;
 
 import java.io.IOException;
 import java.net.*;
