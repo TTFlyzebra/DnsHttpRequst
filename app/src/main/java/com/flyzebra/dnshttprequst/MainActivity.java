@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.flyzebra.tools.DnsTools;
 import com.flyzebra.tools.FlyLog;
 import com.flyzebra.tools.HttpTools;
-import com.flyzebra.tools.PortalTools;
 
 public class MainActivity extends AppCompatActivity {
     private static final HandlerThread sWorkerThread = new HandlerThread("http-task");
@@ -58,19 +57,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int isWifiSetPortal() {
-        boolean setDefult = false;
+        boolean setNetwork = false;
         Network defaultNetwork = cm.getActiveNetwork();
         FlyLog.d("Active Network:" + defaultNetwork);
         Network[] networks = cm.getAllNetworks();
         for (Network network : networks) {
             NetworkInfo netInfo = cm.getNetworkInfo(network);
             if (netInfo != null && (netInfo.getType() == ConnectivityManager.TYPE_WIFI)) {
-                setDefult = cm.bindProcessToNetwork(network);
-            }
-            if (setDefult) {
-                FlyLog.d("Bind Network:" + network);
-                FlyLog.d("Active Network:" + cm.getActiveNetwork());
-                break;
+                if(!network.equals(defaultNetwork)){
+                    setNetwork = cm.bindProcessToNetwork(network);
+                    FlyLog.d("Bind Network:" + network);
+                    FlyLog.d("Active Network:" + cm.getActiveNetwork());
+                    break;
+                }
             }
         }
         stringBuffer.setLength(0);
@@ -101,7 +100,9 @@ public class MainActivity extends AppCompatActivity {
         stringBuffer.append("\n认证返回结果：【").append(code).append("】");
         upTextView();
         FlyLog.d("Get HTTP Code=%d", code);
-        cm.bindProcessToNetwork(null);
+        if(setNetwork){
+            cm.bindProcessToNetwork(null);
+        }
         FlyLog.d("Active Network:" + cm.getActiveNetwork());
         return code;
     }

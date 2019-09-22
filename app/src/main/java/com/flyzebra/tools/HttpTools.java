@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Inet6Address;
@@ -30,9 +31,9 @@ import java.util.Enumeration;
 public class HttpTools {
     public static int getHttpCode(String host, String ip) {
         FlyLog.d("ip=%s,host=%s",ip,host);
-        Socket socket;
-        BufferedReader bufferedReader;
-        BufferedWriter bufferedWriter;
+        Socket socket = null;
+        BufferedReader bufferedReader = null;
+        BufferedWriter bufferedWriter = null;
         try {
 //            String lo = getIpAddress("wlan0");
 //            if (TextUtils.isEmpty(lo)) {
@@ -82,6 +83,28 @@ public class HttpTools {
             socket.close();
         } catch (Exception e) {
             FlyLog.e(e.toString());
+        }finally {
+            try {
+                if (bufferedReader != null) {
+                    bufferedReader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (bufferedWriter != null) {
+                    bufferedWriter.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (socket != null) {
+                    socket.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return 204;
     }
