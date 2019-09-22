@@ -1,3 +1,10 @@
+/**
+ * FileName: FlyDnsTools
+ * Author: FlyZebra
+ * Email:flycnzebra@gmail.com
+ * Date: 2019/9/22 8:49
+ * Description: get dns by hostname
+ */
 package com.flyzebra.tools;
 
 import java.io.IOException;
@@ -8,7 +15,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
-public class UdpDnsTools {
+public class FlyDnsTools {
     private static byte dnsHead[] = {
             (byte) 0xFF, (byte) 0xFF,
             (byte) 0x01, (byte) 0x00,
@@ -25,10 +32,10 @@ public class UdpDnsTools {
      * 返回DNS解析后的一个IP地址
      *
      * @param domin
-     * @param HostAddress
+     * @param dns
      * @return
      */
-    public static String getDns(String domin, final String HostAddress) {
+    public static String getIPbyHost(String domin, final String dns) {
         try {
             ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
             byteBuffer.put(dnsHead);
@@ -47,7 +54,7 @@ public class UdpDnsTools {
 
             DatagramSocket socket = new DatagramSocket();
             socket.setSoTimeout(5000);
-            DatagramPacket sendpack = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(HostAddress), 53);
+            DatagramPacket sendpack = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(dns), 53);
             socket.send(sendpack);
 
             final byte[] recvBuffer = new byte[1024];
@@ -55,15 +62,11 @@ public class UdpDnsTools {
             socket.receive(recvpack);
             byte[] recvData = recvpack.getData();
             FlyLog.d(recvpack.getAddress().getHostAddress() + ":" + recvpack.getPort() + "--len" + recvpack.getData().length);
-            FlyLog.d("recv:%s", ByteTools.bytes2HexString(recvData,64));
+            FlyLog.d("recv:%s", ByteTools.bytes2HexString(recvData, 64));
             int answer = ByteTools.bytes2Short2(recvData, 4);
             if (answer > 0) {
                 ByteBuffer answerBuffer = ByteBuffer.wrap(recvData);
                 answerBuffer.position(len);
-                //  TYPE:回复的类型。2字节，与查询同义。指示RDATA中的资源记录类型。 
-                //  CLASS:回复的类。2字节，与查询同义。指示RDATA中的资源记录类。 
-                //  TTL:生存时间。4字节，指示RDATA中的资源记录在缓存的生存时间。 
-                //  RDLENGTH:长度。2字节，指示RDATA块的长度。 
                 for (; ; ) {
                     short name = answerBuffer.getShort();
                     if (name == 0) break;
@@ -75,8 +78,8 @@ public class UdpDnsTools {
                     answerBuffer.get(content);
                     if (type == 1) {
                         String ip = (content[0] & 0xff) + "." + (content[1] & 0xff) + "." + (content[2] & 0xff) + "." + (content[3] & 0xff);
-                        FlyLog.d("get ip address=%s",ip);
-                        return ip;
+                        FlyLog.d("get ip address=%s", ip);
+                        return ipCheck(ip) ? ip : null;
                     }
                 }
             }
@@ -90,7 +93,20 @@ public class UdpDnsTools {
         return null;
     }
 
-
+    /**
+     * 验证是不是IP地址
+     * @param str
+     * @return
+     */
+    public static boolean ipCheck(String str) {
+        if (str != null && !str.isEmpty()) {
+            String pattern = "^(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}$";
+            if (str.matches(pattern))
+                return true;
+            return false;
+        }
+        return false;
+    }
 }
 
 

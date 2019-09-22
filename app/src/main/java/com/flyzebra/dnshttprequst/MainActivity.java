@@ -1,13 +1,17 @@
 package com.flyzebra.dnshttprequst;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.flyzebra.tools.FlyLog;
-import com.flyzebra.tools.UdpDnsTools;
+import com.flyzebra.tools.FlyDnsTools;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -23,21 +27,39 @@ import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 
 public class MainActivity extends AppCompatActivity {
+    private static final HandlerThread sWorkerThread = new HandlerThread("http-task");
+
+    static {
+        sWorkerThread.start();
+    }
+
+    private static final Handler tHandler = new Handler(sWorkerThread.getLooper());
+    private static Handler mHandler = new Handler(Looper.getMainLooper());
+
+    private TextView textView;
+    private StringBuffer stringBuffer = new StringBuffer();
+    private String host = "connectivitycheck.gstatic.com";
+    private String dns1 = "8.8.8.8";
+    private static final String DEFAULT_IP = "203.208.40.63";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        textView = findViewById(R.id.ac_main_tv01);
     }
 
     public int sendGet(String host, String ip) {
-        if (TextUtils.isEmpty(ip)) {
-            ip = "203.208.40.63";
-        }
         Socket socket;
         BufferedReader bufferedReader;
         BufferedWriter bufferedWriter;
         try {
-            InetAddress localAddress = InetAddress.getByName(getIpAddress("eth0"));
+            String lo = getIpAddress("wlan0");
+            if (TextUtils.isEmpty(lo)) {
+                lo = "0.0.0.0";
+            }
+            FlyLog.d("local ip=" + lo);
+            InetAddress localAddress = InetAddress.getByName(lo);
             socket = new Socket(ip, 80, localAddress, 0);
             OutputStreamWriter streamWriter = new OutputStreamWriter(socket.getOutputStream());
             bufferedWriter = new BufferedWriter(streamWriter);
@@ -109,14 +131,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void test(View view) {
-        new Thread(new Runnable() {
+        tHandler.removeCallbacksAndMessages(null);
+        tHandler.post(new Runnable() {
             @Override
             public void run() {
-                String host = "connectivitycheck.gstatic.com";
-                String ip = UdpDnsTools.getDns(host, "8.8.8.8");
+                stringBuffer.setLength(0);
+                upTextView();
+                stringBuffer.append("待解析域名：").append(host).append("\nDNS服务器：").append(dns1).append("\n\n开始解析DNS......\n");
+                upTextView();
+                String ip = FlyDnsTools.getIPbyHost(host, dns1);
+                stringBuffer.append("\n获取IP地址：").append(ip);
+                upTextView();
+                if(TextUtils.isEmpty(ip)){
+                    ip = DEFAULT_IP;
+                    stringBuffer.append("\n解析IP地址失败使用默认IP：").append(ip);
+                }
                 int code = sendGet(host, ip);
-                FlyLog.d("GET HTTP CODE=%d", code);
+                stringBuffer.append("\nHttp Code：").append(code);
+                upTextView();
+                FlyLog.d("Get HTTP Code=%d", code);
             }
-        }).start();
+        });
+    }
+
+    private void upTextView() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                textView.setText(stringBuffer.toString());
+            }
+        });
     }
 }
