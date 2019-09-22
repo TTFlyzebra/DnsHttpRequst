@@ -1,5 +1,5 @@
 /**
- * FileName: FlyDnsTools
+ * FileName: DnsTools
  * Author: FlyZebra
  * Email:flycnzebra@gmail.com
  * Date: 2019/9/22 8:49
@@ -15,7 +15,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
-public class FlyDnsTools {
+public class DnsTools {
     private static byte dnsHead[] = {
             (byte) 0xFF, (byte) 0xFF,
             (byte) 0x01, (byte) 0x00,

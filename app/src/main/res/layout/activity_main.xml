@@ -9,7 +9,6 @@
         android:id="@+id/ac_main_tv01"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
         android:textColor="#000"/>
 
     <LinearLayout
@@ -22,9 +21,8 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="28sp"
-            android:onClick="test"
-            android:text="认证" />
+            android:onClick="verity"
+            android:text="开始认证" />
     </LinearLayout>
 
 </RelativeLayout>
